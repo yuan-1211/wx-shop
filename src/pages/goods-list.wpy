@@ -1,0 +1,105 @@
+<style lang="less">
+.search-box{
+    padding: 20rpx;
+    background-color: #ff2d4a;
+    .search{
+        background-color: #fff;
+        display: flex;
+        justify-content: start;
+        padding: 0 30rpx;
+        align-items: center;
+        font-size: 16px;
+        height: 60rpx;
+        border-radius:4px;
+        color:#cecece;
+        icon{
+            margin-right: 4px
+        }
+    }
+};
+.more{
+  text-align: center
+}
+</style>
+<template>
+  <div class="cate">
+    <div class="search-box">
+        <div class="search" @tap="goToSearch">
+            <icon type="search" size="16"/>{{params.query}}
+        </div>
+    </div>
+    <van-card v-for="(item,index) in goodsList" :key="index"
+     num="{{item.goods_number}}" price="{{item.goods_price}}"
+      title="{{item.goods_name}}" thumb="{{ item.goods_small_logo }}" lazy-load
+     @tap="goToDatail(item.goods_id)" />
+     <!-- <div class="more" hidden="{{stop}}">没有更多了</div> -->
+      <van-divider contentPosition="center" v-if="!stop">没有更多了</van-divider>
+     <van-toast id="van-toast" />
+  </div>
+</template>
+
+<script>
+import wepy from '@wepy/core'
+import searchReq from '@/api/search'
+import Toast from '@/components/vant/toast/toast'
+wepy.page({
+  data: {
+    params: {
+      query: '',
+      cid: '',
+      pagenum: 1,
+      pagesize: 10
+    },
+    goodsList: [],
+    stop: true
+  },
+  onLoad(value) {
+    this.params.query = value.query || ''
+    this.getGoodData()
+  },
+  onPullDownRefresh: function() {
+    this.params.pagenum = 1
+    this.stop = true
+    this.getGoodData()
+    wx.stopPullDownRefresh()
+  },
+  onReachBottom: async function() {
+    if (this.stop) {
+      this.params.pagenum++
+      let {data} = await searchReq.getSearchGoods(this.params)
+      if (data.message.goods.length === 0) {
+        this.params.pagenum--
+        this.stop = false
+        return Toast.fail('没有更多了')
+      }
+      this.goodsList = [...this.goodsList, ...data.message.goods]
+    }
+  },
+  methods: {
+    async getGoodData() {
+      let {data} = await searchReq.getSearchGoods(this.params)
+      this.goodsList = data.message.goods
+    },
+    goToDatail(id) {
+      wx.navigateTo({
+        url: `/pages/goods-datil?goods_id=${id}`
+      })
+    }
+  }
+})
+</script>
+<config>
+{
+    navigationBarTitleText: '详情',
+    enablePullDownRefresh:true,
+    backgroundColor:'#fff',
+    backgroundTextStyle:'dark',
+    onReachBottomDistance:50,
+    usingComponents: {
+        "van-card": "../components/vant/card/index",
+        "van-toast": "../components/vant/toast/index",
+      "van-divider":"../components/vant/divider/index",
+
+    }
+}
+</config>

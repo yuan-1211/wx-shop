@@ -1,0 +1,150 @@
+<style lang="less">
+image{
+  width: 100%;
+}
+.cate{
+  display: flex;
+  justify-content: space-around;
+  image{
+    width: 180rpx;
+    height: 180rpx;
+  }
+}
+.floor-item {
+    .floor-title {
+      image {
+        width: 750rpx;
+        height: 60rpx;
+        margin-top: 10rpx;
+      }
+    }
+    .floor-content {
+      padding: 10rpx 20rpx;
+      image {
+        border-radius: 4px;
+      }
+      display: flex;
+      .content-left {
+        display: flex;
+        align-items: center;
+        margin-right: 15rpx;
+        image {
+          width: 250rpx;
+          height: 500rpx;
+        }
+      }
+      .content-right {
+        flex: 1;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-content: space-between;
+        image {
+          width: 216rpx;
+          height: 244rpx;
+        }
+      }
+    }
+  }
+</style>
+<template>
+  <div class="home">
+    <search-box></search-box>
+    <!-- 轮播图 -->
+    <swiper indicator-dots="true" autoplay="true" interval="2000" circular>
+      <block wx:for="{{imageList}}" wx:key="item">
+        <swiper-item>
+          <image :src="item.image_src" class="slide-image" mode="aspectFill"></image>
+        </swiper-item>
+      </block>
+    </swiper>
+    <!-- 分类导航 -->
+    <div class="cate">
+      <block  wx:for="{{cataList}}" wx:key="item">
+        <navigator url="{{item.navigator_url}}" open-type="{{item.open_type}}">
+           <image src="{{item.image_src}}"></image>
+        </navigator>
+      </block>
+    </div>
+    <!-- 楼层 -->
+     <div class="floor">
+      <!-- 每一个楼层 -->
+      <div class="floor-item" wx:for="{{floorData}}" wx:key="item">
+        <div class="floor-title">
+          <image
+            src="{{item.floor_title.image_src}}"
+            class="slide-image"
+          />
+        </div>
+        <div class="floor-content">
+          <div class="content-left">
+            <image
+              src="{{item.product_list[0].image_src}}"
+              class="slide-image"
+              mode="aspectFill"
+            />
+          </div>
+          <div class="content-right">
+            <image
+              src="{{item.image_src}}"
+              class="slide-image"
+              v-for="(item, index) in item.product_list"
+              v-show="index!==0"
+              :key="index"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+import wepy from '@wepy/core'
+// import http from '@/utils/request'
+import homeReq from '@/api/home'
+wepy.page({
+  data: {
+    imageList: [],
+    cataList: [],
+    floorData: []
+  },
+  async onLoad() {
+    // wx.request({
+    //   url: 'https://www.uinav.com/api/public/v1/home/swiperdata',
+    //   success: (res) => {
+    //     this.imageList = res.data.message
+    //   }
+    // })
+
+    // console.log(cata)
+    try {
+      let res = await homeReq.getSwiper()
+      this.imageList = res.data.message
+    } catch (error) {
+
+    }
+    try {
+      let cata = await homeReq.getCate()
+      this.cataList = cata.data.message
+    } catch (error) {
+
+    }
+    try {
+      let data = await homeReq.getFloorData()
+      this.floorData = data.data.message
+    } catch (error) {
+
+    }
+  }
+}
+   )
+</script>
+<config>
+{
+    navigationBarTitleText: '一缘商城',
+    usingComponents: {
+      "search-box":"../components/search"
+    }
+}
+</config>

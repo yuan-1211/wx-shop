@@ -1,0 +1,38 @@
+<style lang='less' >
+.search-box{
+    padding: 20rpx;
+    background-color: #ff2d4a;
+    .search{
+        background-color: #fff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 16px;
+        height: 60rpx;
+        border-radius:4px;
+        color:#cecece;
+        icon{
+            margin-right: 4px
+        }
+    }
+}
+</style>
+<template>
+    <div class="search-box">
+        <div class="search" @tap="goToSearch">
+            <icon type="search" size="16"/>搜索
+        </div>
+    </div>
+</template>
+<script>
+import wepy from '@wepy/core'
+wepy.component({
+  methods: {
+    goToSearch() {
+      wx.navigateTo({
+        url: '/pages/search'
+      })
+    }
+  }
+})
+</script>

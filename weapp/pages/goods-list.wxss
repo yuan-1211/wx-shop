@@ -1,0 +1,22 @@
+.search-box {
+  padding: 20rpx;
+  background-color: #ff2d4a;
+}
+.search-box .search {
+  background-color: #fff;
+  display: flex;
+  justify-content: start;
+  padding: 0 30rpx;
+  align-items: center;
+  font-size: 16px;
+  height: 60rpx;
+  border-radius: 4px;
+  color: #cecece;
+}
+.search-box .search icon {
+  margin-right: 4px;
+}
+.more {
+  text-align: center;
+}
+

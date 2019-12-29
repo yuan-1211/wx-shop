@@ -1,0 +1,13 @@
+{
+    "navigationBarTitleText": "详情",
+    "enablePullDownRefresh": true,
+    "backgroundColor": "#fff",
+    "backgroundTextStyle": "dark",
+    "onReachBottomDistance": 50,
+    "component": true,
+    "usingComponents": {
+        "van-divider": "./../components/vant/divider/index",
+        "van-card": "./../components/vant/card/index",
+        "van-toast": "./../components/vant/toast/index"
+    }
+}

@@ -1,0 +1,13 @@
+{
+    "navigationBarTitleText": "搜索",
+    "component": true,
+    "usingComponents": {
+        "van-dialog": "./../components/vant/dialog/index",
+        "van-icon": "./../components/vant/icon/index",
+        "van-cell": "./../components/vant/cell/index",
+        "van-search": "./../components/vant/search/index",
+        "van-divider": "./../components/vant/divider/index",
+        "van-cell-group": "./../components/vant/cell-group/index",
+        "van-tag": "./../components/vant/tag/index"
+    }
+}

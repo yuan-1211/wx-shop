@@ -1,0 +1,7 @@
+{
+    "navigationBarTitleText": "一缘商城",
+    "component": true,
+    "usingComponents": {
+        "search-box": "./../components/search"
+    }
+}

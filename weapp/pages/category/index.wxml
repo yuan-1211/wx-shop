@@ -1,0 +1,20 @@
+
+<view class="cate">
+   <search-box bind_init="_initComponent"></search-box>
+   <view class="category-body">
+    <view class="body-left">
+      <view wx:for="{{ cates }}" wx:for-index="index" wx:for-item="item" wx:key="index" key="{{ index }}" data-wpy-evt="6-0" bindtap="_proxy" data-wpytap-a="{{ index }}" class="body-left-item {{[currentIndex===index ? 'active':'']}}">{{item.cat_name}}</view>
+    </view>
+    <view class="body-right">
+      <view wx:for="{{ rightList }}" wx:for-index="idx" wx:for-item="item" wx:key="idx" key="{{ idx }}" class="body-right-item">
+        <view class="right-item-title">{{item.cat_name}}</view>
+        <view class="right-item-list">
+          <view wx:for="{{ item.children }}" wx:for-index="index" wx:for-item="item" wx:key="index" key="{{ index }}" class="right-item-brand">
+            <image src="{{item.cat_icon}}" mode="aspectFill" class="brand-image"></image>
+            <view class="brand-title">{{item.cat_name}}</view>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,229 @@
+<style lang="less">
+.swiper {
+  height: 720rpx;
+  image {
+    height: 100%;
+    width: 100%;
+  }
+}
+rich-text {
+  font-size: 0;
+}
+.forsell {
+  border-top: 10px solid #f5f5f5;
+  border-bottom: 10px solid #f5f5f5;
+  font-size: 24rpx;
+  padding: 0 10rpx;
+  > view {
+    line-height: 80rpx;
+    text:nth-child(1) {
+      margin-right: 20rpx;
+    }
+    text:nth-child(2) {
+      color: #666;
+    }
+  }
+}
+.goods-price {
+  height: 60rpx;
+  color: #ff2d4a;
+  font-size: 20px;
+  padding: 0 20rpx;
+}
+
+.goods-title {
+  display: flex;
+  height: 80rpx;
+  padding: 0 20rpx;
+  font-size: 30rpx;
+  .right-icon {
+    width: 150rpx;
+    font-size: 30rpx;
+    color: #9e9d9e;
+    border-left: 1px solid #eee;
+    margin-left: 20rpx;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  .left-title {
+    flex: 1;
+    word-break: break-all;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
+
+.express {
+  font-size: 24rpx;
+  color: #9e9d9e;
+  padding: 20rpx;
+}
+.goods-detail {
+  padding-bottom: 50px;
+}
+.van-tabs {
+  z-index: 0;
+}
+</style>
+<template>
+  <div class="cate">
+    <div class="goods-detail">
+      <!-- 轮播图 -->
+      <swiper
+        :indicator-dots="true"
+        indicator-active-color="#fff"
+        :autoplay="true"
+        interval="2000"
+        class="swiper"
+      >
+        <block v-for="(item, index) in goodsDatil.pics" :key="index">
+          <swiper-item>
+            <image src="{{item.pics_big}}" class="slide-image" mode="aspectFill" @tap="showBig(item.pics_big)" />
+          </swiper-item>
+        </block>
+      </swiper>
+
+      <!-- 价格 -->
+      <div class="goods-price">
+        <span>￥ {{goodsDatil.goods_price}}</span>
+      </div>
+
+      <!-- 商品标题 -->
+      <div class="goods-title">
+        <div class="left-title">{{goodsDatil.goods_name}}</div>
+        <div class="right-icon">
+          <van-icon name="star-o" />
+          <span>收藏</span>
+        </div>
+      </div>
+
+      <div class="express">快递：免运费</div>
+
+      <view class="forsell">
+        <!-- 促销 -->
+        <view>
+          <text>促销</text>
+          <text>满300元减30元</text>
+        </view>
+        <!-- 已选 -->
+        <view>
+          <text>已选</text>
+          <text>黑色/S/1件</text>
+        </view>
+      </view>
+
+      <van-tabs active="{{ activeTab }}">
+        <van-tab title="商品详情">
+          <rich-text nodes="{{goodsDatil.goods_introduce}}"></rich-text>
+        </van-tab>
+        <van-tab title="图文详情">
+          <van-row wx:for="{{goodsDatil.attrs}}" wx:key="{{item}}">
+            <van-col span="10">{{item.attr_name}} : </van-col>
+            <van-col span="14">{{item.attr_value}}</van-col>
+          </van-row>
+        </van-tab>
+      </van-tabs>
+      <!-- footer -->
+      <van-goods-action>
+        <van-goods-action-icon icon="chat-o" open-type="contact" text="客服" />
+        <van-goods-action-icon icon="cart-o" text="购物车" info="{{total}}" url="/pages/cart" link-type="switchTab" />
+        <van-goods-action-button text="加入购物车" bind:click="addToCart"  type="warning" />
+        <van-goods-action-button text="立即购买" />
+      </van-goods-action>
+    </div>
+  </div>
+</template>
+
+<script>
+import wepy from '@wepy/core'
+import goodsReq from '@/api/goods'
+wepy.page({
+  data: {
+    goodId: 1,
+    goodsDatil: [],
+    imgUrl: [],
+    cartData: []
+  },
+  onLoad(obj) {
+    this.cartData = wx.getStorageSync('cartData') || []
+    this.goodId = obj.goods_id
+    this.initGoodsDatil()
+  },
+  methods: {
+    async initGoodsDatil() {
+      let { data } = await goodsReq.getGoodsDatil(this.goodId)
+      this.goodsDatil = data.message
+      data.message.pics.map(item => {
+        this.imgUrl.push(item.pics_big_url)
+      })
+
+      // console.log(data)
+    },
+    showBig(obj) {
+      wx.previewImage({
+        current: obj, // 当前显示图片的http链接
+        urls: this.imgUrl // 需要预览的图片http链接列表
+      })
+    },
+    addToCart() {
+      let index = this.cartData.findIndex(item => item.id === this.goodsDatil.goods_id)
+      if (index !== -1) {
+        this.cartData[index].num++
+      } else {
+        let goods = {
+          id: this.goodsDatil.goods_id,
+          num: 1,
+          selected: true,
+          goods_name: this.goodsDatil.goods_name,
+          goods_small_logo: this.goodsDatil.goods_small_logo,
+          goods_price: this.goodsDatil.goods_price
+        }
+        this.cartData.push(goods)
+      }
+      wx.setStorageSync('cartData', this.cartData)
+      console.log(this.cartData)
+
+      let total = 0
+      this.cartData.map(item => {
+        if (item.selected === true) {
+          total += item.num
+        }
+      })
+      wx.setTabBarBadge({
+        index: 2,
+        text: total.toString()
+      })
+    }
+  },
+  computed: {
+    total() {
+      let totalNum = 0
+      this.cartData.map(item => {
+        totalNum += item.num
+      })
+      return totalNum
+    }
+  }
+})
+</script>
+<config>
+{
+    navigationBarTitleText: '商品详情',
+    usingComponents: {
+        "van-tabs": "../components/vant/tabs/index",
+        "van-tab": "../components/vant/tab/index",
+        "van-icon": "../components/vant/icon/index",
+        
+        "van-goods-action": "../components/vant/goods-action/index",
+        "van-goods-action-icon": "../components/vant/goods-action-icon/index",
+        "van-goods-action-button": "../components/vant/goods-action-button/index",
+
+        "van-row": "../components/vant/row/index",
+        "van-col": "../components/vant/col/index"
+    }
+}
+</config>

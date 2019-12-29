@@ -1,0 +1,12 @@
+
+<view class="cate">
+  <view class="search-box">
+      <view data-wpy-evt="10-0" bindtap="_proxy" class="search">
+          <icon type="search" size="16"></icon>{{params.query}}
+      </view>
+  </view>
+  <van-card bind_init="_initComponent" wx:for="{{ goodsList }}" wx:for-index="index" wx:for-item="item" wx:key="index" key="{{ index }}" num="{{item.goods_number}}" price="{{item.goods_price}}" title="{{item.goods_name}}" thumb="{{ item.goods_small_logo }}" lazy-load data-wpy-evt="10-1" bindtap="_proxy" data-wpytap-a="{{ item }}"></van-card>
+   
+    <van-divider bind_init="_initComponent" contentPosition="center" wx:if="{{ !stop }}">没有更多了</van-divider>
+   <van-toast bind_init="_initComponent" id="van-toast"></van-toast>
+</view>

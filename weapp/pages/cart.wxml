@@ -1,0 +1,74 @@
+
+<view class="cate">
+    <view class="cart">
+  <view hidden="{{showFlag}}" class="empty-cart">
+    <image src="/static/images/cart_empty@2x.png" mode="aspectFill"></image>
+    <view class="empty-cart-text">购物车还是空的</view>
+    <view data-wpy-evt="7-91" bindtap="_proxy" class="shop-btn">去逛逛</view>
+  </view>
+
+  <view class="cart-body">
+    <view wx:if="{{ showAddress }}" class="empty-address">
+      <view data-wpy-evt="7-92" bindtap="_proxy" class="add-btn">添加地址</view>
+    </view>
+    <view wx:else class="address">
+      <view class="user-info">
+        <label>收货人：{{address.userName}}</label>
+        <label>{{address.telNumber}}</label>
+      </view>
+      <view class="user-address">收货地址：{{address.addressInfo}}</view>
+    </view>
+    <image src="/static/images/cart_border@2x.png" class="cart-border"></image>
+    <view class="shop-name">
+      <label class="iconfont iconshop"></label>
+      <label>优购生活馆</label>
+    </view>
+    
+    <view class="cart-list">
+      <van-swipe-cell bind_init="_initComponent" right-width="40" wx:for="{{ goodsCart }}" wx:for-index="index" wx:for-item="item" wx:key="index" key="{{ index }}" async-close data-wpy-evt="7-93" bindclose="_proxy" data-wpyclose-a="{{ index }}">
+      <view class="cart-list-item">
+        
+        <view class="cart-goods-status">
+          <label data-wpy-evt="7-94" bindtap="_proxy" data-wpytap-a="{{ index }}" class="iconfont active {{[item.selected===true?'iconcheckbox-marked-circ':'iconcheckbox-blank-circle-outline']}}"></label>
+        </view>
+        
+        <view class="cart-goods-info">
+          <image src="{{ item.goods_small_logo }}" mode="aspectFill"></image>
+          <view class="goods-info-box">
+            <view>{{item.goods_name}}</view>
+            <view class="info-box-bottom">
+              <label class="goods-price">￥ {{item.goods_price}}</label>
+              <view class="goods-count">
+                <label data-wpy-evt="7-95" bindtap="_proxy" data-wpytap-a="{{ index }}" class="count-add iconfont iconminus"></label>
+                <label class="count">{{item.num}}</label>
+                <label data-wpy-evt="7-96" bindtap="_proxy" data-wpytap-a="{{ index }}" class="count-minus iconfont iconplus"></label>
+              </view>
+            </view>
+          </view>
+        </view>
+       
+      </view>
+       <view slot="right" class="deleted">删除</view>
+        </van-swipe-cell>
+    </view> 
+    
+    
+  </view>
+
+  
+  <view class="footer">
+    <view class="footer-item item-left">
+      <label data-wpy-evt="7-97" bindtap="_proxy" class="iconfont active {{[checked===true?'iconcheckbox-marked-circ':'iconcheckbox-blank-circle-outline']}}"></label>
+      <label>全选</label>
+    </view>
+    <view class="footer-item item-center">
+      <view>合计: <label class="total-price">{{total}}</label></view>
+      <view class="express">包含运费</view>
+    </view>
+    <view class="footer-item item-right">
+      计算({{allNum}})
+    </view>
+  </view>
+</view>
+<van-dialog bind_init="_initComponent" id="van-dialog"></van-dialog>
+</view>

@@ -1,0 +1,109 @@
+<style lang="less">
+.search-head {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 5px;
+  padding: 0 10px;
+  font-size: 15px;
+}
+.van-tag {
+  margin: 0 10px;
+}
+</style>
+<template>
+  <div class="search">
+    <van-search value="{{ value }}" placeholder="请输入搜索关键词" show-action
+      bind:change="onChange" bind:search="onSearch" bind:cancel="onCancel" />
+    <div v-if="showHistory">
+      <div class="search-head">
+        <text>最近搜索</text>
+        <van-icon name="delete"/ @tap="deletedHistory">
+      </div>
+      <div class="search-tags">
+        <van-divider contentPosition="center">当前无搜索历史</van-divider>
+        <div >
+          <van-tag round wx:for="{{historyList}}" wx:key="item">{{item}}</van-tag>
+        </div>
+      </div>
+   </div>
+  <van-cell-group v-for="(item,index) in searchList" :key="index">
+    <van-cell title="{{item.goods_name}}"  />
+  </van-cell-group>
+  <van-dialog id="van-dialog" />
+  </div>
+</template>
+
+<script>
+import wepy from '@wepy/core'
+import Dialog from '@/components/vant/dialog/dialog'
+import searchReq from '@/api/search'
+wepy.page({
+  data: {
+    inputVal: '',
+    searchList: [],
+    historyList: [],
+    time: null
+  },
+  onLoad() {
+    this.historyList = wx.getStorageSync('historyList') || []
+  },
+  methods: {
+    onChange(e) {
+      this.inputVal = e.$wx.detail.trim()
+      clearTimeout(this.time)
+      this.time = setTimeout(async () => {
+        let {data} = await searchReq.getSearchData(this.inputVal)
+        this.searchList = data.message
+      }, 1000)
+    },
+
+    async onSearch() {
+      if (this.inputVal.length !== 0) {
+        if (!this.historyList.includes(this.inputVal)) {
+          this.historyList.unshift(this.inputVal)
+        }
+        wx.setStorageSync('historyList', this.historyList)
+      }
+      wx.navigateTo({
+        url: `/pages/goods-list?query=${this.inputVal}`
+      })
+    },
+
+    onCancel() {
+      this.inputVal = ''
+      console.log(this.inputVal)
+    },
+    deletedHistory() {
+      Dialog.confirm({
+        title: '提示',
+        message: '是否真的要删除历史记录'
+      }).then(() => {
+        this.historyList = []
+        wx.setStorageSync('historyList', [])
+  // on confirm
+      }).catch(() => {
+  // on cancel
+      })
+    }
+  },
+  computed: {
+    showHistory: function () {
+      return this.inputVal.length === 0
+    }
+  }
+})
+</script>
+<config>
+{
+    navigationBarTitleText: '搜索',
+    usingComponents: {
+      "van-search":"../components/vant/search/index",
+      "van-cell-group":"../components/vant/cell-group/index",
+      "van-cell":"../components/vant/cell/index",
+      "van-icon":"../components/vant/icon/index",
+      "van-divider":"../components/vant/divider/index",
+      "van-tag":"../components/vant/tag/index",
+      "van-dialog": "../components/vant/dialog/index"
+    }
+}
+</config>

@@ -1,0 +1,9 @@
+{
+    "navigationBarTitleText": "分类页",
+    "component": true,
+    "usingComponents": {
+        "van-dialog": "./../components/vant/dialog/index",
+        "van-swipe-cell": "./../components/vant/swipe-cell/index",
+        "van-field": "./../components/vant/field/index"
+    }
+}

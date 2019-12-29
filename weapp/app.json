@@ -1,0 +1,47 @@
+{
+    "pages": [
+        "pages/index",
+        "pages/category/index",
+        "pages/cart",
+        "pages/mine",
+        "pages/search",
+        "pages/goods-list",
+        "pages/goods-datil"
+    ],
+    "window": {
+        "backgroundTextStyle": "light",
+        "navigationBarBackgroundColor": "#ff2d4a",
+        "navigationBarTitleText": "一缘商城",
+        "navigationBarTextStyle": "white"
+    },
+    "tabBar": {
+        "list": [
+            {
+                "pagePath": "pages/index",
+                "text": "首页",
+                "iconPath": "static/images/home.png",
+                "selectedIconPath": "static/images/home-active.png"
+            },
+            {
+                "pagePath": "pages/category/index",
+                "text": "分类",
+                "iconPath": "static/images/cates.png",
+                "selectedIconPath": "static/images/cates-active.png"
+            },
+            {
+                "pagePath": "pages/cart",
+                "text": "购物车",
+                "iconPath": "static/images/cart.png",
+                "selectedIconPath": "static/images/cart-active.png"
+            },
+            {
+                "pagePath": "pages/mine",
+                "text": "我的",
+                "iconPath": "static/images/my.png",
+                "selectedIconPath": "static/images/my-active.png"
+            }
+        ],
+        "selectedColor": "#ff2d4a"
+    },
+    "usingComponents": {}
+}
